@@ -13,9 +13,9 @@ tabtitle = 'Ames Housing'
 sourceurl = 'http://jse.amstat.org/v19n3/decock.pdf'
 githublink = 'https://github.com/austinlasseter/simple-ml-apps'
 
-filename = open('analysis/ames_housing_lr_model.pkl', 'rb')
-unpickled_model = pickle.load(filename)
-filename.close()
+# filename = open('analysis/ames_housing_lr_model.pkl', 'rb')
+# unpickled_model = pickle.load(filename)
+# filename.close()
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -32,22 +32,22 @@ app.layout = html.Div(children=[
         html.Div([
                 html.H3('Features of Home:'),
                 html.Div('Year Built:'),
-                # dcc.Input(id='YearBuilt', value=2010, type='number', min=2006, max=2010, step=1),
+                dcc.Input(id='YearBuilt', value=2010, type='number', min=2006, max=2010, step=1),
                 html.Div('Bathrooms:'),
-                # dcc.Input(id='Bathrooms', value=2, type='number', min=1, max=5, step=1),
+                dcc.Input(id='Bathrooms', value=2, type='number', min=1, max=5, step=1),
                 html.Div('Bedrooms:'),
-                # dcc.Input(id='BedroomAbvGr', value=4, type='number', min=1, max=5, step=1),
+                dcc.Input(id='BedroomAbvGr', value=4, type='number', min=1, max=5, step=1),
                 html.Div('Total Square Feet:'),
-                # dcc.Input(id='TotalSF', value=2000, type='number', min=100, max=5000, step=1),
+                dcc.Input(id='TotalSF', value=2000, type='number', min=100, max=5000, step=1),
                 html.Div('Single Family Home:'),
-                # dcc.Input(id='SingleFam', value=0, type='number', min=0, max=1, step=1),
+                dcc.Input(id='SingleFam', value=0, type='number', min=0, max=1, step=1),
                 html.Div('Large Neighborhood:'),
-                # dcc.Input(id='LargeNeighborhood', value=0, type='number', min=0, max=1, step=1),
+                dcc.Input(id='LargeNeighborhood', value=0, type='number', min=0, max=1, step=1),
 
             ], className='four columns'),
             html.Div([
                 html.H3('Predicted Home Value:'),
-                # html.Div(id='Results')
+                html.Div(id='Results')
             ], className='four columns')
         ], className='twelve columns',
     ),
@@ -61,26 +61,26 @@ app.layout = html.Div(children=[
 )
 
 
-########## Define Callback
-# @app.callback(
-#     Output(component_id='Results', component_property='children'),
-#     [
-#     Input(component_id='YearBuilt', component_property='value'),
-#     Input(component_id='Bathrooms', component_property='value'),
-#     Input(component_id='BedroomAbvGr', component_property='value'),
-#     Input(component_id='TotalSF', component_property='value'),
-#     Input(component_id='SingleFam', component_property='value'),
-#     Input(component_id='LargeNeighborhood', component_property='value')
-#     ]
-# )
-# def ames_lr_function(YearBuilt,Bathrooms,BedroomAbvGr,TotalSF,SingleFam,LargeNeighborhood):
-#     try:
-#         # y = [-1360501.3809 + 704.4287*YearBuilt + 12738.4775*Bathrooms + -7783.1712*BedroomAbvGr + 49.824*TotalSF+ 25282.091*SingleFam+ -6637.2636*LargeNeighborhood]
-#         y = unpickled_model.predict([[YearBuilt,Bathrooms,BedroomAbvGr,TotalSF,SingleFam,LargeNeighborhood]])
-#         formatted_y = "${:,.2f}".format(y[0])
-#         return formatted_y
-#     except:
-#         return "inadequate inputs"
+######### Define Callback
+@app.callback(
+    Output(component_id='Results', component_property='children'),
+    [
+    Input(component_id='YearBuilt', component_property='value'),
+    Input(component_id='Bathrooms', component_property='value'),
+    Input(component_id='BedroomAbvGr', component_property='value'),
+    Input(component_id='TotalSF', component_property='value'),
+    Input(component_id='SingleFam', component_property='value'),
+    Input(component_id='LargeNeighborhood', component_property='value')
+    ]
+)
+def ames_lr_function(YearBuilt,Bathrooms,BedroomAbvGr,TotalSF,SingleFam,LargeNeighborhood):
+    try:
+        y = [-1360501.3809 + 704.4287*YearBuilt + 12738.4775*Bathrooms + -7783.1712*BedroomAbvGr + 49.824*TotalSF+ 25282.091*SingleFam+ -6637.2636*LargeNeighborhood]
+        # y = unpickled_model.predict([[YearBuilt,Bathrooms,BedroomAbvGr,TotalSF,SingleFam,LargeNeighborhood]])
+        formatted_y = "${:,.2f}".format(y[0])
+        return formatted_y
+    except:
+        return "inadequate inputs"
 
 ############ Deploy
 if __name__ == '__main__':
