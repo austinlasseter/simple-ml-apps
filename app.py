@@ -6,16 +6,16 @@ import pickle
 from dash.dependencies import Input, Output, State
 
 ########### Define your variables ######
-
 myheading1='Predicting Home Sale Prices in Ames, Iowa'
 image1='ames_welcome.jpeg'
 tabtitle = 'Ames Housing'
 sourceurl = 'http://jse.amstat.org/v19n3/decock.pdf'
 githublink = 'https://github.com/austinlasseter/simple-ml-apps'
 
-# filename = open('analysis/ames_housing_lr_model.pkl', 'rb')
-# unpickled_model = pickle.load(filename)
-# filename.close()
+########### open the pickle file ######
+filename = open('analysis/ames_housing_lr_model.pkl', 'rb')
+unpickled_model = pickle.load(filename)
+filename.close()
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -24,7 +24,6 @@ server = app.server
 app.title=tabtitle
 
 ########### Set up the layout
-
 app.layout = html.Div(children=[
     html.H1(myheading1),
     html.Div([
@@ -75,8 +74,8 @@ app.layout = html.Div(children=[
 )
 def ames_lr_function(YearBuilt,Bathrooms,BedroomAbvGr,TotalSF,SingleFam,LargeNeighborhood):
     try:
-        y = [-1360501.3809 + 704.4287*YearBuilt + 12738.4775*Bathrooms + -7783.1712*BedroomAbvGr + 49.824*TotalSF+ 25282.091*SingleFam+ -6637.2636*LargeNeighborhood]
-        # y = unpickled_model.predict([[YearBuilt,Bathrooms,BedroomAbvGr,TotalSF,SingleFam,LargeNeighborhood]])
+        # y = [-1360501.3809 + 704.4287*YearBuilt + 12738.4775*Bathrooms + -7783.1712*BedroomAbvGr + 49.824*TotalSF+ 25282.091*SingleFam+ -6637.2636*LargeNeighborhood]
+        y = unpickled_model.predict([[YearBuilt,Bathrooms,BedroomAbvGr,TotalSF,SingleFam,LargeNeighborhood]])
         formatted_y = "${:,.2f}".format(y[0])
         return formatted_y
     except:
