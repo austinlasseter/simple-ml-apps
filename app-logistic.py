@@ -9,8 +9,8 @@ from dash.dependencies import Input, Output, State
 ########### Define your variables ######
 myheading1='Predicting Mortgage Loan Approval'
 image1='assets/rocauc.html'
-tabtitle = 'Ames Housing'
-sourceurl = 'http://jse.amstat.org/v19n3/decock.pdf'
+tabtitle = 'Loan Prediction'
+sourceurl = 'https://datahack.analyticsvidhya.com/contest/practice-problem-loan-prediction-iii/'
 githublink = 'https://github.com/austinlasseter/simple-ml-apps'
 
 ########### open the json file ######

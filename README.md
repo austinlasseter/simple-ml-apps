@@ -2,7 +2,7 @@
 
 View the finished apps on Heroku:
 * Linear regression model using the Ames housing dataset [here](https://ames-housing-linear-reg.herokuapp.com/).
-* Logistic regression model using the home mortgage dataset [here](https://ames-housing-linear-reg.herokuapp.com/).
+* Logistic regression model using the home mortgage dataset [here](https://loan-approval-classifier.herokuapp.com/).
 
 
 
