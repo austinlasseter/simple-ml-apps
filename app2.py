@@ -11,7 +11,7 @@ import dash_daq as daq
 tabtitle = 'Dash DAQ'
 sourceurl = 'https://dash.plot.ly/dash-daq'
 sourceurl2 = 'https://dash.plot.ly/state'
-githublink = 'https://github.com/austinlasseter/dash-daq-state'
+githublink = 'https://github.com/austinlasseter/simple-ml-apps'
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
