@@ -2,43 +2,20 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
+import pickle
+from dash.dependencies import Input, Output, State
 
-########### Define your variables
-beers=['Chesapeake Stout', 'Snake Dog IPA', 'Imperial Porter', 'Double Dog IPA']
-ibu_values=[35, 60, 85, 75]
-abv_values=[5.4, 7.1, 9.2, 4.3]
-color1='darkred'
-color2='orange'
-mytitle='Beer Comparison'
-tabtitle='beer!'
-myheading='Flying Dog Beers'
-label1='IBU'
-label2='ABV'
-githublink='https://github.com/austinlasseter/flying-dog-beers'
-sourceurl='https://www.flyingdog.com/beers/'
+########### Define your variables ######
 
-########### Set up the chart
-bitterness = go.Bar(
-    x=beers,
-    y=ibu_values,
-    name=label1,
-    marker={'color':color1}
-)
-alcohol = go.Bar(
-    x=beers,
-    y=abv_values,
-    name=label2,
-    marker={'color':color2}
-)
+myheading1='Predicting Home Sale Prices in Ames, Iowa'
+image1='ames_welcome.jpeg'
+tabtitle = 'Ames Housing'
+sourceurl = 'http://jse.amstat.org/v19n3/decock.pdf'
+githublink = 'https://github.com/austinlasseter/dash-simple-callback'
 
-beer_data = [bitterness, alcohol]
-beer_layout = go.Layout(
-    barmode='group',
-    title = mytitle
-)
-
-beer_fig = go.Figure(data=beer_data, layout=beer_layout)
-
+filename = open('analysis/ames_housing_lr_model.pkl', 'rb')
+unpickled_model = pickle.load(filename)
+filename.close()
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -47,17 +24,64 @@ server = app.server
 app.title=tabtitle
 
 ########### Set up the layout
+
 app.layout = html.Div(children=[
-    html.H1(myheading),
-    dcc.Graph(
-        id='flyingdog',
-        figure=beer_fig
+    html.H1(myheading1),
+    html.Div([
+        html.Img(src=app.get_asset_url(image1), style={'width': '30%', 'height': 'auto'}, className='four columns'),
+        html.Div([
+                html.H3('Features of Home:'),
+                html.Div('Year Built:'),
+                dcc.Input(id='YearBuilt', value=2010, type='number', min=2006, max=2010, step=1),
+                html.Div('Bathrooms:'),
+                dcc.Input(id='Bathrooms', value=2, type='number', min=1, max=5, step=1),
+                html.Div('Bedrooms:'),
+                dcc.Input(id='BedroomAbvGr', value=4, type='number', min=1, max=5, step=1),
+                html.Div('Total Square Feet:'),
+                dcc.Input(id='TotalSF', value=2000, type='number', min=100, max=5000, step=1),
+                html.Div('Single Family Home:'),
+                dcc.Input(id='SingleFam', value=0, type='number', min=0, max=1, step=1),
+                html.Div('Large Neighborhood:'),
+                dcc.Input(id='LargeNeighborhood', value=0, type='number', min=0, max=1, step=1),
+
+            ], className='four columns'),
+            html.Div([
+                html.H3('Predicted Home Value:'),
+                html.Div(id='Results')
+            ], className='four columns')
+        ], className='twelve columns',
     ),
+
+
+    html.Br(),
     html.A('Code on Github', href=githublink),
     html.Br(),
-    html.A('Data Source', href=sourceurl),
+    html.A("Data Source", href=sourceurl),
     ]
 )
 
+
+########## Define Callback
+@app.callback(
+    Output(component_id='Results', component_property='children'),
+    [
+    Input(component_id='YearBuilt', component_property='value'),
+    Input(component_id='Bathrooms', component_property='value'),
+    Input(component_id='BedroomAbvGr', component_property='value'),
+    Input(component_id='TotalSF', component_property='value'),
+    Input(component_id='SingleFam', component_property='value'),
+    Input(component_id='LargeNeighborhood', component_property='value')
+    ]
+)
+def ames_lr_function(YearBuilt,Bathrooms,BedroomAbvGr,TotalSF,SingleFam,LargeNeighborhood):
+    try:
+        # y = -1360501.3809 + 704.4287*YearBuilt + 12738.4775*Bathrooms + -7783.1712*BedroomAbvGr + 49.824*TotalSF+ 25282.091*SingleFam+ -6637.2636*LargeNeighborhood
+        y = unpickled_model.predict([[YearBuilt,Bathrooms,BedroomAbvGr,TotalSF,SingleFam,LargeNeighborhood]])
+        formatted_y = "${:,.2f}".format(y[0])
+        return formatted_y
+    except:
+        return "inadequate inputs"
+
+############ Deploy
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)
