@@ -2,8 +2,10 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
+import plotly.express as px
 import pickle
 import json
+from sklearn import metrics
 from dash.dependencies import Input, Output, State
 
 ########### Define your variables ######
@@ -46,7 +48,7 @@ app.layout = html.Div(children=[
                 dcc.Input(id='Loan_Amount_Term', value=360, type='number', min=120, max=480, step=10),
                 html.Div('Applicant Income (in dollars)'),
                 dcc.Input(id='ApplicantIncome', value=5000, type='number', min=0, max=100000, step=500),
-                html.Div('Probability Threshold'),
+                html.Div('Probability Threshold for Loan Approval'),
                 dcc.Input(id='Threshold', value=50, type='number', min=0, max=100, step=1),
 
             ], className='three columns'),
@@ -88,8 +90,8 @@ app.layout = html.Div(children=[
 def prediction_function(Credit_History, LoanAmount, Loan_Amount_Term, ApplicantIncome, Threshold):
     try:
         data = [[Credit_History, LoanAmount, Loan_Amount_Term, ApplicantIncome]]
-        rawprob=100*unpickled_model.predict_proba(data)[0][0]
-        func = lambda y: 'Denied' if int(rawprob)>Threshold else 'Approved'
+        rawprob=100*unpickled_model.predict_proba(data)[0][1]
+        func = lambda y: 'Approved' if int(rawprob)>Threshold else 'Denied'
         formatted_y = func(rawprob)
         deny_prob=unpickled_model.predict_proba(data)[0][0]*100
         formatted_deny_prob = "{:,.2f}%".format(deny_prob)
@@ -98,6 +100,10 @@ def prediction_function(Credit_History, LoanAmount, Loan_Amount_Term, ApplicantI
         return formatted_y, formatted_app_prob, formatted_deny_prob
     except:
         return "inadequate inputs", "inadequate inputs"
+
+
+
+
 
 ############ Deploy
 if __name__ == '__main__':
